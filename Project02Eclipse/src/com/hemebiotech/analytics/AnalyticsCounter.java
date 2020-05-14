@@ -1,43 +1,46 @@
 package com.hemebiotech.analytics;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.BufferedReader; 
+import java.io.FileReader; 
+import java.io.FileWriter; 
+import java.util.ArrayList; 
+import java.util.Collections; 
+import java.util.HashMap; 
+import java.util.List; 
+import java.util.Map; 
 
 public class AnalyticsCounter {
-	private static int headacheCount = 0;	// initialize to 0
-	private static int rashCount = 0;		// initialize to 0
-	private static int pupilCount = 0;		// initialize to 0
-	
-	public static void main(String args[]) throws Exception {
-		// first get input
-		BufferedReader reader = new BufferedReader (new FileReader("..//Project_DA_Java_EN_Come_to_the_Rescue_of_a_Java_Application//Project02Eclipse//symptoms.txt"));
+
+	static Map<String, Integer> symptomsOccurrences = new HashMap<String, Integer>(); 
+
+	public static void main(String args[]) throws Exception { 
+
+		// Step 1 : Reading symptoms.txt
+		BufferedReader reader = new BufferedReader(new FileReader(
+				"..//Project_DA_Java_EN_Come_to_the_Rescue_of_a_Java_Application//Project02Eclipse//symptoms.txt"));
 		String line = reader.readLine();
 
-		int i = 0;	// set i to 0
-		int headCount = 0;	// counts headaches
-		while (line != null) {
-			i++;	// increment i
-			System.out.println("symptom from file: " + line);
-			if (line.equals("headache")) {
-				headCount++;
-				System.out.println("number of headaches: " + headCount);
+		// Step 2 : Counting Symptoms occurrences
+		while (line != null) { 
+			if (symptomsOccurrences.containsKey(line)) { 
+				symptomsOccurrences.put(line, symptomsOccurrences.get(line) + 1);
+			} else {
+				symptomsOccurrences.put(line, 1); 
 			}
-			else if (line.equals("rush")) {
-				rashCount++;
-			}
-			else if (line.contains("pupils")) {
-				pupilCount++;
-			}
-
-			line = reader.readLine();	// get another symptom
+			line = reader.readLine(); 
 		}
-		
-		// next generate output
-		FileWriter writer = new FileWriter ("result.out");
-		writer.write("headache: " + headacheCount + "\n");
-		writer.write("rash: " + rashCount + "\n");
-		writer.write("dialated pupils: " + pupilCount + "\n");
+
+		// Step 3 : Sorting Symptoms in ascending order
+		List<String> listSymptoms = new ArrayList<String>(symptomsOccurrences.keySet()); 
+		Collections.sort(listSymptoms); 
+
+		// Step 4 : Writing result.out
+		FileWriter writer = new FileWriter("result.out"); 
+		writer.write("Symptoms list and occurrences \n");
+		for (String symptom : listSymptoms) {
+			writer.write(symptom + "=" + symptomsOccurrences.get(symptom)  + "\n");  
+		}
 		writer.close();
+		reader.close();
 	}
 }
