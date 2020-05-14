@@ -1,46 +1,81 @@
 package com.hemebiotech.analytics;
 
-import java.io.BufferedReader; 
-import java.io.FileReader; 
-import java.io.FileWriter; 
-import java.util.ArrayList; 
-import java.util.Collections; 
-import java.util.HashMap; 
-import java.util.List; 
-import java.util.Map; 
+
+import java.util.List;
+import java.util.TreeMap;
+
+/**
+ * <b>AnalyticsCounter main class of the project is build to read file "symptom.txt" including Symptoms and to write out alphabetically all Symptoms and their occurrences.</b>
+ * 
+ * <p> 
+ * AnalyticsCounter class includes classes and interfaces : 
+ * <ul>
+ * <li> SymptomReader which implements InterfaceSymptomReader : read file "symptom.txt". </li>
+ * <li> SymptomCounter which implements InterfaceSymptomCounter : count occurrences of each Symptoms and sort Symptom in ascending order. </li>
+ * <li> SymptomWriter which implements InterfaceSymptomWriter : write out result in file "result.out". </li>
+ * </ul>
+ * 
+ * @see InterfaceSymptomReader
+ * @see SymptomReader
+ * @see InterfaceSymptomCounter
+ * @see SymptomCounter
+ * @see InterfaceSymptomWriter
+ * @see SymptomWriter
+ * 
+ * @author VO Frederic
+ * @version 3.0 
+ * 
+ */
 
 public class AnalyticsCounter {
 
-	static Map<String, Integer> symptomsOccurrences = new HashMap<String, Integer>(); 
+	/** 
+	 * The main method of this project.
+	 * 
+	 * @param args array of string arguments.
+	 * @throws Exception exception from writer.
+	 * @since 1.0
+	 */
 
-	public static void main(String args[]) throws Exception { 
+	public static void main(String args[]) throws Exception {
+		
+		/** 
+		 * Constant which includes relative path of "symptom.txt".
+		 * 
+		 * 
+		 * @param filepath a full or partial path to file with Symptom strings in it, one per line.
+		 * @since 3.0
+		 */
+		String filepath = "..//Project_DA_Java_EN_Come_to_the_Rescue_of_a_Java_Application//Project02Eclipse//symptoms.txt";
+		
+		/** 
+		 * STEP 1 : Reading file "symptom.txt".
+		 *  
+		 *  @see InterfaceSymptomReader
+		 *  @see SymptomReader
+		 *  @since 3.0
+		 */
+		InterfaceSymptomReader reader = new SymptomReader(filepath);
+		List<String> allSymptoms = reader.getSymptoms();
 
-		// Step 1 : Reading symptoms.txt
-		BufferedReader reader = new BufferedReader(new FileReader(
-				"..//Project_DA_Java_EN_Come_to_the_Rescue_of_a_Java_Application//Project02Eclipse//symptoms.txt"));
-		String line = reader.readLine();
-
-		// Step 2 : Counting Symptoms occurrences
-		while (line != null) { 
-			if (symptomsOccurrences.containsKey(line)) { 
-				symptomsOccurrences.put(line, symptomsOccurrences.get(line) + 1);
-			} else {
-				symptomsOccurrences.put(line, 1); 
-			}
-			line = reader.readLine(); 
-		}
-
-		// Step 3 : Sorting Symptoms in ascending order
-		List<String> listSymptoms = new ArrayList<String>(symptomsOccurrences.keySet()); 
-		Collections.sort(listSymptoms); 
-
-		// Step 4 : Writing result.out
-		FileWriter writer = new FileWriter("result.out"); 
-		writer.write("Symptoms list and occurrences \n");
-		for (String symptom : listSymptoms) {
-			writer.write(symptom + "=" + symptomsOccurrences.get(symptom)  + "\n");  
-		}
-		writer.close();
-		reader.close();
+		/** 
+		 * STEP 2 : Counting occurrences of Symptoms from file "symptom.txt" and sort Symptom in ascending order.
+		 *  
+		 *  @see InterfaceSymptomCounter
+		 *  @see SymptomCounter
+		 *  @since 3.0
+		 */
+		InterfaceSymptomCounter count = new SymptomCounter();
+		TreeMap<String, Integer> counterSymptoms = count.countSymptoms(allSymptoms);
+		
+		/** 
+		 * STEP 3 : Writing "result.out" including list of Symptoms and their occurrences in ascending order.
+		 *  
+		 *  @see InterfaceSymptomWriter
+		 *  @see SymptomWriter
+		 *  @since 3.0
+		 */
+		InterfaceSymptomWriter write = new SymptomWriter();
+		write.writeSymptoms(counterSymptoms);
 	}
 }
